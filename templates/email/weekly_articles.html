@@ -1,0 +1,11 @@
+{% load static %}
+<h1>{% if top_advertisements %}
+    Топ 10 объявлений за вчерашний день
+{% else %}
+    10 последних объявлений
+{% endif %}
+</h1>
+{% for advertisement in advertisements %}
+<p><b><a href='{{ advertisement.url }}'>{{ advertisement.title }}</a></b></p>
+<p>Категория: {{ advertisement.category }}</p>
+{% endfor %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Объявления{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Все объявления</h1>
+    <form method="get" action=".">
+        <select name="category" class="form-control mb-3" onchange="this.form.submit()">
+            <option value="">Все категории</option>
+            {% for key, value in category_choices %}
+                <option value="{{ key }}" {% if category == key %}selected{% endif %}>{{ value }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    {% if user.is_authenticated %}
+    <div class="text-right mb-3">
+        <a href="{% url 'advertisement_create' %}" class="btn btn-success">Создать объявление</a>
+    </div>
+    {% endif %}
+    <div class="row">
+        {% for advertisement in page_obj %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                {% if advertisement.images %}
+                <img class="card-img-top" src="{{ advertisement.images.url }}" alt="{{ advertisement.title }}">
+                {% elif advertisement.video_file %}
+                <video class="card-img-top" width="100%" controls>
+                    <source src="{{ advertisement.video_file.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                {% endif %}
+                <div class="card-body">
+                    <h4 class="card-title">{{ advertisement.title }}</h4>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'advertisement_detail' advertisement.id %}" class="btn btn-primary">Подробнее</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>Нет объявлений.</p>
+        {% endfor %}
+    </div>
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+            <a href="?page=1{% if category %}&category={{ category }}{% endif %}">&laquo; первая</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if category %}&category={{ category }}{% endif %}">предыдущая</a>
+            {% endif %}
+
+            <span class="current">
+                Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if category %}&category={{ category }}{% endif %}">следующая</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if category %}&category={{ category }}{% endif %}">последняя &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+

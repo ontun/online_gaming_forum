@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Последние объявления</h1>
+    <div class="row">
+        {% for advertisement in advertisements %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                {% if advertisement.images %}
+                <img class="card-img-top" src="{{ advertisement.images.url }}" alt="{{ advertisement.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h4 class="card-title">{{ advertisement.title }}</h4>
+
+                </div>
+                <div class="card-footer">
+                    {% if advertisement.pk %}
+                    <a href="{% url 'advertisement_detail' advertisement.pk %}" class="btn btn-primary">Подробнее</a>
+                    {% else %}
+                    <span class="btn btn-secondary">Нет деталей</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>Нет объявлений.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

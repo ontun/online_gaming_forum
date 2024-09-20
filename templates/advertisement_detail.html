@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}{{ advertisement.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <h1>{{ advertisement.title }}</h1>
+            {% if advertisement.images %}
+                <img class="img-fluid" src="{{ advertisement.images.url }}" alt="{{ advertisement.title }}">
+            {% endif %}
+            {% if advertisement.video_file %}
+                <video width="100%" controls>
+                    <source src="{{ advertisement.video_file.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            {% endif %}
+            <div class="card-body" style="overflow-wrap: break-word;">
+                <h4>Категория - {{ advertisement.category }}</h4>
+                <p class="mt-4">{{ advertisement.content|linebreaks }}</p>
+            </div>
+            {% if request.user == advertisement.user %}
+                <a href="{% url 'advertisement_edit' advertisement.pk %}" class="btn btn-primary">Редактировать</a>
+            {% endif %}
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">Отклики</div>
+                <div class="card-body">
+                    {% for response in responses %}
+                    <div class="response">
+                        <p>{{ response.text }}</p>
+                    </div>
+                    {% empty %}
+                    <p>Пока нет откликов</p>
+                    {% endfor %}
+                </div>
+                <div class="card-footer">
+                    <form method="post" action="{% url 'response_create' advertisement.pk %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <textarea class="form-control" name="text" placeholder="Ваш отклик"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Отправить отклик</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
